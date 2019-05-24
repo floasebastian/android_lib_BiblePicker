@@ -1,0 +1,19 @@
+{
+  "bibles"  : [
+    {
+      "id"            : "en_kjv",
+      "filename"      : "en_kjv.json",
+      "fullname"      : "English, King James Version",
+      "shortname"      : "KJV"
+    },
+    {
+      "id"            : "en_bbe",
+      "filename"      : "en_bbe.json",
+      "fullname"      : "English, Basic English",
+      "shortname"      : "BBE"
+    }
+  ],
+  "settings" : {
+    "default-bible" : "en_kjv"
+  }
+}
