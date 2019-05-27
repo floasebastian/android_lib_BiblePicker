@@ -5,85 +5,107 @@
     android:layout_height="wrap_content"
     tools:context=".VersesPicker">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/spinner_bible"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/spinner_book"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <Spinner
-                    android:id="@+id/spinner_chapter"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/spinner_verse_start"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <Spinner
-                    android:id="@+id/spinner_verse_end"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_show"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="SHOW" />
-
-                <Button
-                    android:id="@+id/button_copy"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:text="COPY" />
-
-                <Button
-                    android:id="@+id/button_select"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="SELECT" />
-            </LinearLayout>
+            <Spinner
+                android:id="@+id/spinner_book"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
         </LinearLayout>
-    </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinner_chapter"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="5" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/char_colon"
+                android:textAlignment="center"
+                android:textAllCaps="true" />
+
+            <Spinner
+                android:id="@+id/spinner_verse_start"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="5" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/char_dash"
+                android:textAlignment="center"
+                android:textAllCaps="true" />
+
+            <Spinner
+                android:id="@+id/spinner_verse_end"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="5" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_show"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/uppercase_show"
+                android:textAllCaps="true" />
+
+            <Button
+                android:id="@+id/button_copy"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/uppercase_copy"
+                android:textAllCaps="true" />
+
+            <Button
+                android:id="@+id/button_select"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/uppercase_select"
+                android:textAllCaps="true" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </FrameLayout>

@@ -4,9 +4,13 @@
 
     <application>
         <activity
+            android:name=".BibleListPickerTest"
+            android:label="@string/title_activity_bible_list_picker_test"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".BiblePickerTest"
             android:label="@string/title_activity_bible_picker_test"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -227,9 +227,27 @@ public class BibleManager {
             JSONArray chapter = this.getChapter(bookIdx, chapterIdx);
             result = "";
             for(int i = verseStart; i <= verseEnd; i++){
-                result += superscript(String.valueOf(i + 1));
+                result += Utilities.superscriptNum(String.valueOf(i + 1));
                 result += chapter.getString(i);
                 if(i != verseEnd){
+                    result += "\n";
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public String getVerses(int bookIdx, int chapterIdx, int verses[] ){
+        String result = null;
+        try {
+            JSONArray chapter = this.getChapter(bookIdx, chapterIdx);
+            result = "";
+            for(int i = 0; i < verses.length; i++){
+                result += Utilities.superscriptNum(String.valueOf(i + 1));
+                result += chapter.getString(verses[i]);
+                if(i != verses.length - 1){
                     result += "\n";
                 }
             }
@@ -245,6 +263,24 @@ public class BibleManager {
 
     public String getSingleVerse(int bookIdx, int chapterIdx, int verseIdx){
         return getVerses(bookIdx, chapterIdx, verseIdx, verseIdx);
+    }
+
+    public List<String> getVersesInChapter(int bookIdx, int chapterIdx){
+        List<String> verses = new ArrayList<String>();
+
+        try {
+            JSONArray chapter = this.getChapter(bookIdx, chapterIdx);
+            for(int i = 0; i < chapter.length(); i++){
+                String line = "";
+                line += Utilities.superscriptNum(String.valueOf(i + 1));
+                line += chapter.getString(i);
+                verses.add(line);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return verses;
     }
 
     public String loadJSONFromAsset(String filename) {
@@ -264,33 +300,4 @@ public class BibleManager {
 
         return json;
     }
-
-    public static String superscript(String str) {
-        str = str.replaceAll("0", "⁰");
-        str = str.replaceAll("1", "¹");
-        str = str.replaceAll("2", "²");
-        str = str.replaceAll("3", "³");
-        str = str.replaceAll("4", "⁴");
-        str = str.replaceAll("5", "⁵");
-        str = str.replaceAll("6", "⁶");
-        str = str.replaceAll("7", "⁷");
-        str = str.replaceAll("8", "⁸");
-        str = str.replaceAll("9", "⁹");
-        return str;
-    }
-
-    public static String subscript(String str) {
-        str = str.replaceAll("0", "₀");
-        str = str.replaceAll("1", "₁");
-        str = str.replaceAll("2", "₂");
-        str = str.replaceAll("3", "₃");
-        str = str.replaceAll("4", "₄");
-        str = str.replaceAll("5", "₅");
-        str = str.replaceAll("6", "₆");
-        str = str.replaceAll("7", "₇");
-        str = str.replaceAll("8", "₈");
-        str = str.replaceAll("9", "₉");
-        return str;
-    }
-
 }

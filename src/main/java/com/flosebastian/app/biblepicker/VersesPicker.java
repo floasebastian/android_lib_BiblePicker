@@ -100,22 +100,6 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         }
     }
 
-    public void utilFillSpinner(Spinner spinner, ArrayList<String> arrayList){
-        if(this.getActivity() != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, arrayList);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-        }
-    }
-
-    public ArrayList<String> utilGenerateNumbersStringArrayList(int start, int end){
-        ArrayList<String> result = new ArrayList<String>();
-        for(int i = start; i <= end; i++){
-            result.add(String.valueOf(i));
-        }
-        return result;
-    }
-
     private void initializeButtons(View theView){
         m_buttonShow        = (Button)theView.findViewById(R.id.button_show);
         m_buttonCopy        = (Button)theView.findViewById(R.id.button_copy);
@@ -149,6 +133,7 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         });
 
     }
+
     private String getCurrentVerses(){
         int bible    = (int)m_spinnerBook.getSelectedItemId();
         int book    = (int)m_spinnerBook.getSelectedItemId();
@@ -156,11 +141,13 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         int start   = (int)m_spinnerVerseStart.getSelectedItemId();
         int end     = (int)Integer.parseInt(m_spinnerVerseEnd.getSelectedItem().toString()) - 1;
         String strBible = m_spinnerBible.getSelectedItem().toString();
+        String strBook = m_spinnerBook.getSelectedItem().toString();
         String strVersesNum = "" + ((start == end) ? start + 1 : (start + 1) + "-" + (end + 1) );
-        String strVerses = m_spinnerBook.getSelectedItem().toString() + " " + (chapter+1) + ":" + strVersesNum + ", " + strBible + "\n";
+        String strVerses = strBook  + " " + (chapter+1) + ":" + strVersesNum + ", " + strBible + "\n";
         strVerses += m_bibleManager.getVerses(book, chapter, start, end);
         return strVerses;
     }
+
     private void initializeSpinners(View theView){
         m_spinnerBible      = (Spinner)theView.findViewById(R.id.spinner_bible);
         m_spinnerBook       = (Spinner)theView.findViewById(R.id.spinner_book);
@@ -171,7 +158,7 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         ArrayList<String> bibleList = (ArrayList<String>) m_bibleManager.getInstance().getBiblesList();
 
         if(bibleList != null){
-            utilFillSpinner(m_spinnerBible, bibleList);
+            Utilities.fillSpinner(this, m_spinnerBible, bibleList);
             m_spinnerBible.setOnItemSelectedListener(this);
         }
 
@@ -182,25 +169,25 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         m_bibleManager.loadBible(bibleIdx);
         ArrayList<String> booksList = (ArrayList<String>) m_bibleManager.getInstance().getBooksList();
         if(booksList != null){
-            utilFillSpinner(m_spinnerBook, booksList);
+            Utilities.fillSpinner(this, m_spinnerBook, booksList);
             m_spinnerBook.setOnItemSelectedListener(this);
         }
     }
 
     private void onBookSelected(int bookIdx){
         int chaptersCount = this.m_bibleManager.getChaptersCount(bookIdx);
-        ArrayList<String> chapters = utilGenerateNumbersStringArrayList(1, chaptersCount);
-        utilFillSpinner(m_spinnerChapter, chapters);
+        ArrayList<String> chapters = Utilities.generateNumbersStringArrayList(1, chaptersCount);
+        Utilities.fillSpinner(this, m_spinnerChapter, chapters);
         m_spinnerChapter.setOnItemSelectedListener(this);
     }
 
     private void onChapterSelected(int chapterIdx){
         int bookIdx = (int)m_spinnerBook.getSelectedItemId();
         int versesCount = this.m_bibleManager.getVersesCount(bookIdx, chapterIdx);
-        ArrayList<String> versesS = utilGenerateNumbersStringArrayList(1, versesCount);
-        ArrayList<String> versesE = utilGenerateNumbersStringArrayList(1, versesCount);
-        utilFillSpinner(m_spinnerVerseStart, versesS);
-        utilFillSpinner(m_spinnerVerseEnd, versesE);
+        ArrayList<String> versesS = Utilities.generateNumbersStringArrayList(1, versesCount);
+        ArrayList<String> versesE = Utilities.generateNumbersStringArrayList(1, versesCount);
+        Utilities.fillSpinner(this, m_spinnerVerseStart, versesS);
+        Utilities.fillSpinner(this, m_spinnerVerseEnd, versesE);
         m_spinnerVerseStart.setOnItemSelectedListener(this);
         m_spinnerVerseEnd.setOnItemSelectedListener(this);
     }
@@ -208,8 +195,8 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
     private void onVerseStartSelected(int verseIdx){
         int start = verseIdx + 1;
         int end = m_spinnerVerseStart.getAdapter().getCount();
-        ArrayList<String> verses = utilGenerateNumbersStringArrayList(start, end);
-        utilFillSpinner(m_spinnerVerseEnd, verses);
+        ArrayList<String> verses = Utilities.generateNumbersStringArrayList(start, end);
+        Utilities.fillSpinner(this, m_spinnerVerseEnd, verses);
     }
 
     private void onVerseEndSelected(int verseIdx){
@@ -270,7 +257,7 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         /*void onFragmentInteraction(Uri uri);*/
-        void onVerseSelected(String verse);
+        void onVerseSelected(String versesStr);
     }
 
 
