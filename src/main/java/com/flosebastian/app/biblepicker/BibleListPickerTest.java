@@ -1,13 +1,18 @@
 package com.flosebastian.app.biblepicker;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class BibleListPickerTest extends AppCompatActivity implements VersesListPicker.OnFragmentInteractionListener  {
+public class BibleListPickerTest extends AppCompatActivity implements VersesListPicker.OnFragmentInteractionListener, DialogFragmentShowVerses.OnFragmentInteractionListener {
+
+    private DialogFragmentShowVerses m_showVersesDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,4 +31,23 @@ public class BibleListPickerTest extends AppCompatActivity implements VersesList
         });
     }
 
+    @Override
+    public void onSelectVersesButtonClicked(String verseStr) {
+        showVersesDialog(verseStr);
+
+        return;
+    }
+
+    public void showVersesDialog(String content){
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        m_showVersesDialog = DialogFragmentShowVerses.newInstance(content, null);
+        m_showVersesDialog.show(ft, "dialog");
+    }
 }

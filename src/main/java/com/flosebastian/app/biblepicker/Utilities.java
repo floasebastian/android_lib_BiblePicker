@@ -9,6 +9,7 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 
 public final class Utilities {
+    public enum NumberFormat{NORMAL, SUPERSCRIPT, SUBSCRIPT};
     public static void fillSpinner(Fragment f, Spinner spinner, ArrayList<String> arrayList){
         if(f.getActivity() != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(f.getActivity(), android.R.layout.simple_spinner_item, arrayList);
@@ -51,5 +52,21 @@ public final class Utilities {
         str = str.replaceAll("8", "₈");
         str = str.replaceAll("9", "₉");
         return str;
+    }
+
+    public static String formatNumber(String str, NumberFormat numberFormat){
+        String result = "";
+        switch (numberFormat){
+            case NORMAL:
+                result += str;
+                break;
+            case SUBSCRIPT:
+                result += Utilities.subscriptNum(String.valueOf(str));
+                break;
+            case SUPERSCRIPT:
+            default:
+                result += Utilities.superscriptNum(String.valueOf(str));
+        }
+        return result;
     }
 }

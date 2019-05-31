@@ -60,7 +60,7 @@ public class BiblePickerTest extends AppCompatActivity implements VersesPicker.O
     }
 
     @Override
-    public void onVerseSelected(String verseStr) {
+    public void onSelectVersesButtonClicked(String verseStr) {
         m_textViewVerses.setText(verseStr);
     }
 

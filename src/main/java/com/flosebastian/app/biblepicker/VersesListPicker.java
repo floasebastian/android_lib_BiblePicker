@@ -1,5 +1,7 @@
 package com.flosebastian.app.biblepicker;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableRow;
@@ -45,7 +48,15 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
     Spinner m_spinnerBook       = null;
     Spinner m_spinnerChapter    = null;
 
-    Set<Integer> m_setSelected = new HashSet<>();
+    Button m_buttonShow         = null;
+    Button m_buttonCopy         = null;
+    Button m_buttonSelect       = null;
+    Button m_buttonShared       = null;
+    Button m_buttonPrev         = null;
+    Button m_buttonNext         = null;
+
+
+    Set<Integer> m_setSelected = new HashSet<Integer>();
 
     LinearLayout m_linearLayoutVerses = null;
     LinearLayout m_linearLayoutAction = null;
@@ -97,6 +108,7 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
         m_bibleManager.init(this.getContext());
 
         this.initializeSpinners(thisFragmentView);
+        this.initializeButtons(thisFragmentView);
 
         m_linearLayoutVerses = (LinearLayout) thisFragmentView.findViewById(R.id.linear_layout_verses_container);
         m_linearLayoutAction = (LinearLayout) thisFragmentView.findViewById(R.id.linear_layout_action_buttons_group);
@@ -117,7 +129,39 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
             Utilities.fillSpinner(this, m_spinnerBible, bibleList);
             m_spinnerBible.setOnItemSelectedListener(this);
         }
+    }
 
+    private void initializeButtons(View theView){
+        m_buttonShow        = theView.findViewById(R.id.button_show);
+        m_buttonCopy        = theView.findViewById(R.id.button_copy);
+        m_buttonSelect      = theView.findViewById(R.id.button_select);
+        m_buttonPrev      = theView.findViewById(R.id.button_next);
+        m_buttonNext      = theView.findViewById(R.id.button_prev);
+        m_buttonShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), getSelectedVerses(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+        m_buttonCopy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String strVerses = getSelectedVerses();
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Verse", strVerses);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getActivity(), "Verses copied to the clipboard!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        m_buttonSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String strVerses = getSelectedVerses();
+                mListener.onSelectVersesButtonClicked(strVerses);
+            }
+        });
 
     }
 
@@ -237,6 +281,15 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
     }
 
 
+    public String getSelectedVerses(){
+        int bible    = (int)m_spinnerBook.getSelectedItemId();
+        int book    = (int)m_spinnerBook.getSelectedItemId();
+        int chapter = (int)m_spinnerChapter.getSelectedItemId();
+        Integer[] indices =  m_setSelected.toArray(new Integer[m_setSelected.size()]);
+        String result = m_bibleManager.getVerses(book, chapter, indices, true, Utilities.NumberFormat.SUPERSCRIPT, true, false);
+        return result;
+    }
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
@@ -254,6 +307,6 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        //void onFragmentInteraction(Uri uri);
+        void onSelectVersesButtonClicked(String versesStr);
     }
 }

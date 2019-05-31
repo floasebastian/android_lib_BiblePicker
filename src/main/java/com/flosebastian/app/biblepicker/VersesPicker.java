@@ -108,7 +108,7 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         m_buttonShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String strVerses = getCurrentVerses();
+                String strVerses = getSelectedVerses();
                 Toast.makeText(getActivity(), strVerses, Toast.LENGTH_LONG).show();
             }
         });
@@ -116,7 +116,7 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         m_buttonCopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String strVerses = getCurrentVerses();
+                String strVerses = getSelectedVerses();
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("Verse", strVerses);
                 clipboard.setPrimaryClip(clip);
@@ -127,14 +127,14 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         m_buttonSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String strVerses = getCurrentVerses();
-                mListener.onVerseSelected(strVerses);
+                String strVerses = getSelectedVerses();
+                mListener.onSelectVersesButtonClicked(strVerses);
             }
         });
 
     }
 
-    private String getCurrentVerses(){
+    private String getSelectedVerses(){
         int bible    = (int)m_spinnerBook.getSelectedItemId();
         int book    = (int)m_spinnerBook.getSelectedItemId();
         int chapter = (int)m_spinnerChapter.getSelectedItemId();
@@ -144,7 +144,7 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         String strBook = m_spinnerBook.getSelectedItem().toString();
         String strVersesNum = "" + ((start == end) ? start + 1 : (start + 1) + "-" + (end + 1) );
         String strVerses = strBook  + " " + (chapter+1) + ":" + strVersesNum + ", " + strBible + "\n";
-        strVerses += m_bibleManager.getVerses(book, chapter, start, end);
+        strVerses += m_bibleManager.getVerses(book, chapter, start, end, true, Utilities.NumberFormat.SUPERSCRIPT, true, true);
         return strVerses;
     }
 
@@ -257,7 +257,7 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         /*void onFragmentInteraction(Uri uri);*/
-        void onVerseSelected(String versesStr);
+        void onSelectVersesButtonClicked(String versesStr);
     }
 
 

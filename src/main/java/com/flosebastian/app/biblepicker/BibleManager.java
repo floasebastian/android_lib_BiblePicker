@@ -204,12 +204,18 @@ public class BibleManager {
         return verseCount;
     }
 
-    public String getVerses(String bookName, int chapterIdx, int verseStart, int verseEnd ){
+    public String getVerses(String bookName, int chapterIdx, int verseStart, int verseEnd,
+                            boolean withNumber, Utilities.NumberFormat numberFormat,
+                            boolean withHeader, boolean withFooter ){
         String result = null;
         try {
             JSONArray chapter = this.getChapter(bookName, chapterIdx);
             result = "";
             for(int i = verseStart; i <= verseEnd; i++){
+                if(withNumber){
+                    String verseNumStr = String.valueOf(i + 1);
+                    result += Utilities.formatNumber(verseNumStr, numberFormat);
+                }
                 result += chapter.getString(i);
                 if(i != verseEnd){
                     result += "\n";
@@ -221,13 +227,18 @@ public class BibleManager {
         return result;
     }
 
-    public String getVerses(int bookIdx, int chapterIdx, int verseStart, int verseEnd ){
+    public String getVerses(int bookIdx, int chapterIdx, int verseStart, int verseEnd,
+                            boolean withNumber, Utilities.NumberFormat numberFormat,
+                            boolean withHeader, boolean withFooter){
         String result = null;
         try {
             JSONArray chapter = this.getChapter(bookIdx, chapterIdx);
             result = "";
             for(int i = verseStart; i <= verseEnd; i++){
-                result += Utilities.superscriptNum(String.valueOf(i + 1));
+                if(withNumber){
+                    String verseNumStr = String.valueOf(i + 1);
+                    result += Utilities.formatNumber(verseNumStr, numberFormat);
+                }
                 result += chapter.getString(i);
                 if(i != verseEnd){
                     result += "\n";
@@ -239,13 +250,19 @@ public class BibleManager {
         return result;
     }
 
-    public String getVerses(int bookIdx, int chapterIdx, int verses[] ){
+    public String getVerses(int bookIdx, int chapterIdx, Integer verses[],
+                            boolean withNumber, Utilities.NumberFormat numberFormat,
+                            boolean withHeader, boolean withFooter){
         String result = null;
         try {
             JSONArray chapter = this.getChapter(bookIdx, chapterIdx);
             result = "";
             for(int i = 0; i < verses.length; i++){
-                result += Utilities.superscriptNum(String.valueOf(i + 1));
+                if(withNumber){
+                    String verseNumStr = String.valueOf(verses[i] + 1);
+                    result += Utilities.formatNumber(verseNumStr, numberFormat);
+                }
+
                 result += chapter.getString(verses[i]);
                 if(i != verses.length - 1){
                     result += "\n";
@@ -257,13 +274,13 @@ public class BibleManager {
         return result;
     }
 
-    public String getSingleVerse(String bookName, int chapterIdx, int verseIdx){
+/*    public String getSingleVerse(String bookName, int chapterIdx, int verseIdx){
         return getVerses(bookName, chapterIdx, verseIdx, verseIdx);
     }
 
     public String getSingleVerse(int bookIdx, int chapterIdx, int verseIdx){
         return getVerses(bookIdx, chapterIdx, verseIdx, verseIdx);
-    }
+    }*/
 
     public List<String> getVersesInChapter(int bookIdx, int chapterIdx){
         List<String> verses = new ArrayList<String>();
@@ -299,5 +316,88 @@ public class BibleManager {
         }
 
         return json;
+    }
+
+    public String getCurrentBibleShortName(){
+        String result = null;
+
+        try {
+            result = m_currentBible.getString("shortname");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+    public String getBibleShortName(int bibleIdx){
+        String result = null;
+
+        try {
+            result = m_bibles.getJSONObject(bibleIdx).getString("shortname");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public String getCurrentBibleFullName(){
+        String result = null;
+
+        try {
+            result = m_currentBible.getString("fullname");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public String getBibleFullName(int bibleIdx){
+        String result = null;
+
+        try {
+            result = m_bibles.getJSONObject(bibleIdx).getString("fullname");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public String getBookFullName(int bookIdx){
+        String result = null;
+
+        try {
+            JSONObject book = getBook(bookIdx);
+            result = book.getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public String getBookShortName(int bookIdx){
+        String result = null;
+
+        try {
+            JSONObject book = getBook(bookIdx);
+            result = book.getString("abbrev");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public String getVersesHeader(int bibleIdx, int bookIdx, int chapterIdx, int verseStart, int verseEnd){
+        String result = null;
+        return result;
+    }
+
+    public String getVersesHeader(int bibleIdx, int bookIdx, int chapterIdx, Integer[] verses){
+        String result = null;
+        return result;
     }
 }
