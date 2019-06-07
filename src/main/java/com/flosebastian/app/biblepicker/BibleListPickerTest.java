@@ -32,13 +32,13 @@ public class BibleListPickerTest extends AppCompatActivity implements VersesList
     }
 
     @Override
-    public void onSelectVersesButtonClicked(String verseStr) {
-        showVersesDialog(verseStr);
+    public void onSelectVersesButtonClicked(String versesTitle, String versesStr) {
+        showVersesDialog(versesTitle, versesStr);
 
         return;
     }
 
-    public void showVersesDialog(String content){
+    public void showVersesDialog(String title, String content){
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag("dialog");
         if (prev != null) {
@@ -47,7 +47,7 @@ public class BibleListPickerTest extends AppCompatActivity implements VersesList
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        m_showVersesDialog = DialogFragmentShowVerses.newInstance(content, null);
+        m_showVersesDialog = DialogFragmentShowVerses.newInstance(title, content);
         m_showVersesDialog.show(ft, "dialog");
     }
 }

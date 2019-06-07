@@ -155,7 +155,7 @@ public class VersesPicker extends Fragment implements AdapterView.OnItemSelected
         m_spinnerVerseStart = (Spinner)theView.findViewById(R.id.spinner_verse_start);
         m_spinnerVerseEnd   = (Spinner)theView.findViewById(R.id.spinner_verse_end);
 
-        ArrayList<String> bibleList = (ArrayList<String>) m_bibleManager.getInstance().getBiblesList();
+        ArrayList<String> bibleList = (ArrayList<String>) m_bibleManager.getInstance().getBiblesShortnameList();
 
         if(bibleList != null){
             Utilities.fillSpinner(this, m_spinnerBible, bibleList);

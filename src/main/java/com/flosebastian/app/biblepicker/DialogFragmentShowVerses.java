@@ -25,7 +25,8 @@ public class DialogFragmentShowVerses extends DialogFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private TextView m_textViewResult = null;
+    private TextView m_textViewTitle = null;
+    private TextView m_textViewContent = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -70,8 +71,12 @@ public class DialogFragmentShowVerses extends DialogFragment {
         // Inflate the layout for this fragment
         View thisView = inflater.inflate(R.layout.fragment_dialog_fragment_show_verses, container, false);
 
-        m_textViewResult = (TextView) thisView.findViewById(R.id.text_view_result);
-        m_textViewResult.setText(mParam1);
+        m_textViewTitle = (TextView) thisView.findViewById(R.id.text_view_title);
+        m_textViewTitle.setText(mParam1);
+
+        m_textViewContent = (TextView) thisView.findViewById(R.id.text_view_content);
+        m_textViewContent.setText(mParam2);
+
         return thisView;
     }
 

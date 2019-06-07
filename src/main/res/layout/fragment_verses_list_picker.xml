@@ -19,21 +19,24 @@
 
             <Spinner
                 android:id="@+id/spinner_bible"
-                android:layout_width="match_parent"
+                style="@android:style/Widget.Holo.Light.Spinner"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="3" />
 
             <Spinner
                 android:id="@+id/spinner_book"
-                android:layout_width="match_parent"
+                style="@android:style/Widget.Holo.Light.Spinner"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="6" />
 
             <Spinner
                 android:id="@+id/spinner_chapter"
-                android:layout_width="match_parent"
+                style="@android:style/Widget.Holo.Light.Spinner"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="3" />
         </LinearLayout>
 
         <LinearLayout
@@ -45,14 +48,14 @@
             <Button
                 android:id="@+id/button_prev"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/uppercase_prev" />
 
             <TextView
                 android:id="@+id/text_view_chapter"
-                android:layout_width="wrap_content"
+                android:layout_width="0dip"
                 android:layout_height="match_parent"
                 android:layout_weight="6"
                 android:gravity="center_vertical|center_horizontal"
@@ -63,43 +66,56 @@
             <Button
                 android:id="@+id/button_next"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/uppercase_next" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linear_layout_action_buttons_group"
+            style="?android:attr/buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <Button
                 android:id="@+id/button_show"
-                android:layout_width="wrap_content"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/uppercase_show" />
 
             <Button
                 android:id="@+id/button_copy"
-                android:layout_width="wrap_content"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/uppercase_copy" />
 
             <Button
-                android:id="@+id/button_select"
-                android:layout_width="wrap_content"
+                android:id="@+id/button_share"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/uppercase_share" />
+
+            <Button
+                android:id="@+id/button_select"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="#DFFF00"
                 android:text="@string/uppercase_select" />
         </LinearLayout>
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -109,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"></LinearLayout>
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
 
 </FrameLayout>

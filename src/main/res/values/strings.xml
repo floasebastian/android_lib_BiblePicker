@@ -7,6 +7,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="uppercase_show">SHOW</string>
     <string name="uppercase_copy">COPY</string>
+    <string name="uppercase_share">SHARE</string>
     <string name="uppercase_select">SELECT</string>
     <string name="uppercase_next">NEXT</string>
     <string name="uppercase_prev">PREV</string>
@@ -14,4 +15,6 @@
     <string name="char_dash">-</string>
     <string name="please_select">Please select the bible, book, chapter and verses!</string>
     <string name="title_activity_bible_list_picker_test">BibleListPickerTest</string>
+    <string name="title">Title</string>
+    <string name="content">Content</string>
 </resources>

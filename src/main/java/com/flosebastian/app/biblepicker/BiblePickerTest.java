@@ -1,6 +1,5 @@
 package com.flosebastian.app.biblepicker;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,7 +36,7 @@ public class BiblePickerTest extends AppCompatActivity implements VersesPicker.O
                         .setAction("Action", null).show();
             }
         });
-        m_textViewVerses = (TextView) findViewById(R.id.text_view_result);
+        m_textViewVerses = (TextView) findViewById(R.id.text_view_content);
         m_textViewVerses.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

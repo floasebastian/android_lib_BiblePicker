@@ -3,8 +3,10 @@ package com.flosebastian.app.biblepicker;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -37,6 +39,8 @@ import java.util.Set;
 public class VersesListPicker extends Fragment implements AdapterView.OnItemSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    enum Direction{NEXT, PREV}
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -51,10 +55,11 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
     Button m_buttonShow         = null;
     Button m_buttonCopy         = null;
     Button m_buttonSelect       = null;
-    Button m_buttonShared       = null;
+    Button m_buttonShare        = null;
     Button m_buttonPrev         = null;
     Button m_buttonNext         = null;
 
+    int m_targetChapter         = -1;
 
     Set<Integer> m_setSelected = new HashSet<Integer>();
 
@@ -112,7 +117,7 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
 
         m_linearLayoutVerses = (LinearLayout) thisFragmentView.findViewById(R.id.linear_layout_verses_container);
         m_linearLayoutAction = (LinearLayout) thisFragmentView.findViewById(R.id.linear_layout_action_buttons_group);
-
+        m_linearLayoutAction.setVisibility(View.GONE);
         m_titleChapter = (TextView) thisFragmentView.findViewById(R.id.text_view_chapter);
 
         return thisFragmentView;
@@ -123,7 +128,7 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
         m_spinnerBook       = (Spinner)theView.findViewById(R.id.spinner_book);
         m_spinnerChapter    = (Spinner)theView.findViewById(R.id.spinner_chapter);
 
-        ArrayList<String> bibleList = (ArrayList<String>) m_bibleManager.getInstance().getBiblesList();
+        ArrayList<String> bibleList = (ArrayList<String>) m_bibleManager.getInstance().getBiblesShortnameList();
 
         if(bibleList != null){
             Utilities.fillSpinner(this, m_spinnerBible, bibleList);
@@ -134,20 +139,23 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
     private void initializeButtons(View theView){
         m_buttonShow        = theView.findViewById(R.id.button_show);
         m_buttonCopy        = theView.findViewById(R.id.button_copy);
+        m_buttonShare        = theView.findViewById(R.id.button_share);
         m_buttonSelect      = theView.findViewById(R.id.button_select);
-        m_buttonPrev      = theView.findViewById(R.id.button_next);
-        m_buttonNext      = theView.findViewById(R.id.button_prev);
+        m_buttonPrev      = theView.findViewById(R.id.button_prev);
+        m_buttonNext      = theView.findViewById(R.id.button_next);
+
+
         m_buttonShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), getSelectedVerses(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getSelectedVersesTitle() + "\n" + getSelectedVerses(),Toast.LENGTH_LONG).show();
             }
         });
 
         m_buttonCopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String strVerses = getSelectedVerses();
+                String strVerses = getSelectedVersesTitle() + "\n" +getSelectedVerses();
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("Verse", strVerses);
                 clipboard.setPrimaryClip(clip);
@@ -155,14 +163,86 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
             }
         });
 
-        m_buttonSelect.setOnClickListener(new View.OnClickListener() {
+        m_buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String strVerses = getSelectedVerses();
-                mListener.onSelectVersesButtonClicked(strVerses);
+                String title = getSelectedVersesTitle();
+                String content = getSelectedVerses();
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, title);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + content);
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
             }
         });
 
+        m_buttonSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String strVersesHeader = getSelectedVersesTitle();
+                String strVerses = getSelectedVerses();
+                mListener.onSelectVersesButtonClicked(strVersesHeader, strVerses);
+            }
+        });
+
+        m_buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonNextPrevButtonClicked(v, Direction.NEXT);
+            }
+        });
+
+        m_buttonPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonNextPrevButtonClicked(v, Direction.PREV);
+            }
+        });
+
+    }
+
+    private void onButtonNextPrevButtonClicked(View v, Direction dir){
+        int bookCount           = m_spinnerBook.getCount();
+        int chapterCount        = m_spinnerChapter.getCount();
+        int currentBookId       = m_spinnerBook.getSelectedItemPosition();
+        int currentChapterId    = m_spinnerChapter.getSelectedItemPosition();
+        int targetBookId        = currentBookId;
+        int targetChapterId     = currentChapterId;
+
+        switch (dir){
+            case NEXT:
+                if( currentChapterId == (chapterCount - 1) ){
+                    if(currentBookId == (bookCount -1)){
+                        targetBookId = 0;
+                    }else{
+                        targetBookId++;
+                    }
+                    targetChapterId = 0;
+                }else{
+                    targetChapterId++;
+                }
+                break;
+            case PREV:
+                if( currentChapterId == 0 ){
+                    if(currentBookId == 0){
+                        targetBookId = bookCount - 1;
+                    }else{
+                        targetBookId--;
+                    }
+                    targetChapterId = m_bibleManager.getChaptersCount(targetBookId) - 1;
+                }else{
+                    targetChapterId--;
+                }
+                break;
+            default:
+                break;
+        }
+        if(currentBookId != targetBookId) {
+            m_spinnerBook.setSelection(targetBookId, true);
+            m_targetChapter = targetChapterId;
+        }else{
+            m_spinnerChapter.setSelection(targetChapterId, true);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -209,6 +289,7 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
             Utilities.fillSpinner(this, m_spinnerBook, booksList);
             m_spinnerBook.setOnItemSelectedListener(this);
         }
+        m_setSelected.clear();
     }
 
     private void onBookSelected(int bookIdx){
@@ -216,6 +297,11 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
         ArrayList<String> chapters = Utilities.generateNumbersStringArrayList(1, chaptersCount);
         Utilities.fillSpinner(this, m_spinnerChapter, chapters);
         m_spinnerChapter.setOnItemSelectedListener(this);
+        if(m_targetChapter != -1){
+            m_spinnerChapter.setSelection(m_targetChapter, true);
+            m_targetChapter = -1;
+        }
+        m_setSelected.clear();
     }
 
     private void onChapterSelected(int chapterIdx){
@@ -261,7 +347,7 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
                             }
                         }
                         sel += selectedIdx;
-                        Toast.makeText(getContext(), sel, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getContext(), sel, Toast.LENGTH_LONG).show();
 
                         if(m_setSelected.size() > 0){
                             m_linearLayoutAction.setVisibility(View.VISIBLE);
@@ -278,15 +364,25 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
                 m_linearLayoutVerses.addView(tv);
             }
         }
+        m_setSelected.clear();
     }
 
 
     public String getSelectedVerses(){
-        int bible    = (int)m_spinnerBook.getSelectedItemId();
-        int book    = (int)m_spinnerBook.getSelectedItemId();
-        int chapter = (int)m_spinnerChapter.getSelectedItemId();
-        Integer[] indices =  m_setSelected.toArray(new Integer[m_setSelected.size()]);
-        String result = m_bibleManager.getVerses(book, chapter, indices, true, Utilities.NumberFormat.SUPERSCRIPT, true, false);
+        int bible           = (int)m_spinnerBible.getSelectedItemId();
+        int book            = (int)m_spinnerBook.getSelectedItemId();
+        int chapter         = (int)m_spinnerChapter.getSelectedItemId();
+        Integer[] indices   =  m_setSelected.toArray(new Integer[m_setSelected.size()]);
+        String result       = m_bibleManager.getVerses(book, chapter, indices, true, Utilities.NumberFormat.SUPERSCRIPT, false, false);
+        return result;
+    }
+
+    public String getSelectedVersesTitle(){
+        int bible           = (int)m_spinnerBible.getSelectedItemId();
+        int book            = (int)m_spinnerBook.getSelectedItemId();
+        int chapter         = (int)m_spinnerChapter.getSelectedItemId();
+        Integer[] indices   =  m_setSelected.toArray(new Integer[m_setSelected.size()]);
+        String result       = m_bibleManager.getVersesHeader(bible, book, chapter, indices);
         return result;
     }
 
@@ -307,6 +403,6 @@ public class VersesListPicker extends Fragment implements AdapterView.OnItemSele
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onSelectVersesButtonClicked(String versesStr);
+        void onSelectVersesButtonClicked(String versesTitleStr, String versesStr);
     }
 }

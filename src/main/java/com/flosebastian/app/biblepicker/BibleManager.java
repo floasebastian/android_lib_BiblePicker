@@ -77,7 +77,7 @@ public class BibleManager {
         return isSuccess;
     }
 
-    public List<String> getBiblesList(){
+    public List<String> getBiblesShortnameList(){
         List<String> bibles = new ArrayList<String>();
         try{
             for(int i = 0; i < m_bibles.length(); i++){
@@ -102,6 +102,10 @@ public class BibleManager {
             e.printStackTrace();
         }
         return books;
+    }
+
+    public int getBooksCount(int bibleIdx){
+        return 0;
     }
 
     public JSONObject getBook(String bookName){
@@ -255,6 +259,7 @@ public class BibleManager {
                             boolean withHeader, boolean withFooter){
         String result = null;
         try {
+            Arrays.sort(verses);
             JSONArray chapter = this.getChapter(bookIdx, chapterIdx);
             result = "";
             for(int i = 0; i < verses.length; i++){
@@ -393,11 +398,51 @@ public class BibleManager {
 
     public String getVersesHeader(int bibleIdx, int bookIdx, int chapterIdx, int verseStart, int verseEnd){
         String result = null;
+        String bibleNameStr     = getBibleShortName(bibleIdx);
+        String bookNameStr      = getBookFullName(bookIdx);
+        String chapterStr       = String.valueOf(chapterIdx + 1);
+        String strVersesNum = "" + ((verseStart == verseEnd) ? verseStart + 1 : (verseStart + 1) + "-" + (verseEnd + 1) );
+        result = bookNameStr + " " + chapterStr + ":" + strVersesNum + ", " + bibleNameStr;
         return result;
     }
 
-    public String getVersesHeader(int bibleIdx, int bookIdx, int chapterIdx, Integer[] verses){
-        String result = null;
+    public String getVersesHeader(int bibleIdx, int bookIdx, int chapterIdx, Integer[] versesIndices){
+        String result           = null;
+        String bibleNameStr     = getBibleShortName(bibleIdx);
+        String bookNameStr      = getBookFullName(bookIdx);
+        String chapterStr       = String.valueOf(chapterIdx + 1);
+
+        //Build verses number
+        String strVersesNum     = "";
+        int lastNum             = -1;
+        boolean slug            = false;
+
+        Arrays.sort(versesIndices);
+
+        for (int i = 0; i < versesIndices.length; i++) {
+            int x = versesIndices[i];
+            x += 1;
+            if(x - 1 != lastNum){
+                if(slug){
+                    strVersesNum += "-" + lastNum + ", " + x;
+                    slug = false;
+                }else{
+                    if(lastNum == -1){
+                        strVersesNum += x;
+                    }else{
+                        strVersesNum += "," + x;
+                    }
+                }
+            }else{
+                slug = true;
+                if(i == versesIndices.length - 1){
+                    strVersesNum += "-" + x;
+                }
+            }
+            lastNum = x;
+        }
+
+        result = bookNameStr + " " + chapterStr + ":" + strVersesNum + ", " + bibleNameStr;
         return result;
     }
 }
