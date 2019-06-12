@@ -30,29 +30,33 @@ public class BibleManager {
     public void init(Context context){
         m_context = context;
         try{
-            JSONObject jBible = new JSONObject(loadJSONFromAsset("bibles/bibles.json"));
-            m_bibles    = jBible.getJSONArray("bibles");
-            m_settings  = jBible.getJSONObject("settings");
+            JSONObject jBible   = new JSONObject(loadJSONFromAsset("bibles/bibles.json"));
+            m_bibles            = jBible.getJSONArray("bibles");
+            m_settings          = jBible.getJSONObject("settings");
 
             String defaultBible = m_settings.getString("default-bible");
-
-            m_isInitialized = loadBible(defaultBible);
-
+            m_isInitialized     = loadBible(defaultBible);
         }catch(JSONException e){
             e.printStackTrace();
         }
+    }
+
+    public boolean isInitialized(){
+        return m_isInitialized;
     }
 
     public boolean loadBible(String code){
         boolean isSuccess = false;
         try{
             for(int i = 0; i < m_bibles.length(); i++) {
-                m_currentBible = m_bibles.getJSONObject(i);
-                String bibleId = m_currentBible.getString("id");
+                JSONObject bibleObj = m_bibles.getJSONObject(i);
+                String bibleId = bibleObj.getString("id");
                 if(code.equalsIgnoreCase(bibleId)) {
-                    String bibleFilename = "bibles/" + m_currentBible.getString("filename");
-                    JSONArray bible = new JSONArray( loadJSONFromAsset(bibleFilename) );
-                    m_currentBible.put("data", bible);
+                    String bibleFilename    = "bibles/" + bibleObj.getString("filename");
+                    JSONArray bibleData     = new JSONArray( loadJSONFromAsset(bibleFilename) );
+                    bibleObj.put("data", bibleData);
+
+                    m_currentBible          = bibleObj;
                     isSuccess = true;
                     break;
                 }
@@ -65,14 +69,18 @@ public class BibleManager {
 
     public boolean loadBible(int idx){
         boolean isSuccess = false;
-        try{
-            m_currentBible = m_bibles.getJSONObject(idx);
-            String bibleFilename = "bibles/" + m_currentBible.getString("filename");
-            JSONArray bible = new JSONArray( loadJSONFromAsset(bibleFilename) );
-            m_currentBible.put("data", bible);
-            isSuccess = true;
-        }catch(JSONException e){
-            e.printStackTrace();
+        if(idx >= 0 && idx < m_bibles.length()) {
+            try {
+                JSONObject bibleObj     = m_bibles.getJSONObject(idx);
+                String bibleFilename    = "bibles/" + bibleObj.getString("filename");
+                JSONArray bibleData     = new JSONArray(loadJSONFromAsset(bibleFilename));
+                bibleObj.put("data", bibleData);
+
+                m_currentBible          = bibleObj;
+                isSuccess = true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return isSuccess;
     }
@@ -104,8 +112,15 @@ public class BibleManager {
         return books;
     }
 
-    public int getBooksCount(int bibleIdx){
-        return 0;
+    public int getBooksCount(){
+        int bookCount = 0;
+        try{
+            JSONArray books = m_currentBible.getJSONArray("data");
+            bookCount = books.length();
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        return bookCount;
     }
 
     public JSONObject getBook(String bookName){
